@@ -1,0 +1,1 @@
+El proyecto se debe ejecutar desde app.py
