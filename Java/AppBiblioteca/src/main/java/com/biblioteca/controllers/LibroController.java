@@ -3,6 +3,8 @@ package com.biblioteca.controllers;
 import com.biblioteca.models.Libro;
 import com.biblioteca.services.FirebaseService;
 import com.google.firebase.database.*;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,8 +12,10 @@ import javafx.scene.control.*;
 
 public class LibroController {
 
+	@FXML
+	private Label numLibros;
     @FXML
-    private ListView<String> listaLibros;
+    private ListView<Libro> listaLibros;
     @FXML
     private TextField txtBuscar;
     @FXML
@@ -20,16 +24,39 @@ public class LibroController {
     private TextField txtAutor;
     @FXML
     private ComboBox<String> comboEstado;
-
     private ObservableList<Libro> libros = FXCollections.observableArrayList();
-    private ObservableList<String> librosObservable = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        listaLibros.setItems(librosObservable);
+    	System.out.println("LibroController inicializado");
+        listaLibros.setItems(libros);
+        
+        listaLibros.setCellFactory(lv -> new ListCell<Libro>() {
+            @Override
+            protected void updateItem(Libro libro, boolean empty) {
+                super.updateItem(libro, empty);
+
+                if (empty || libro == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(
+                        libro.getTitulo() + " - " +
+                        libro.getAutor() + " [" +
+                        libro.getEstado() + "]"
+                    );
+
+                    if ("En posesión".equals(libro.getEstado())) {
+                        setStyle("-fx-text-fill: green;");
+                    } else {
+                        setStyle("-fx-text-fill: orange;");
+                    }
+                }
+            }
+        });
 
         // ComboBox para estado
-        comboEstado.setItems(FXCollections.observableArrayList("en Posesion", "Pendiente"));
+        comboEstado.setItems(FXCollections.observableArrayList("En posesión", "Pendiente"));
         comboEstado.getSelectionModel().selectFirst();
 
         cargarLibros();
@@ -44,32 +71,47 @@ public class LibroController {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                libros.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    // ds es libro1, libro2, ...
-                    Libro libro = ds.getValue(Libro.class);
-                    if (libro != null) libros.add(libro);
-                    else System.out.println("Libro nulo: " + ds.getValue());
-                }
-                filtrarLista(txtBuscar.getText());
+
+                Platform.runLater(() -> {
+                    libros.clear();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        @SuppressWarnings("unchecked")
+                        java.util.Map<String, Object> map =
+                                (java.util.Map<String, Object>) ds.getValue();
+
+                        String id = ds.getKey();
+                        String titulo = (String) map.get("titulo");
+                        String autor = (String) map.get("autor");
+                        String estado = (String) map.get("estado");
+
+                        libros.add(new Libro(id, titulo, autor, estado));
+                    }
+
+                    // 🔢 ACTUALIZAR CONTADOR
+                    numLibros.setText("Libros: " + snapshot.getChildrenCount());
+                });
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                System.out.println("Error al leer libros: " + error.getMessage());
+                System.out.println("ERROR FIREBASE: " + error.getMessage());
             }
         });
     }
 
+
     private void filtrarLista(String filtro) {
-        librosObservable.clear();
+        ObservableList<Libro> filtrados = FXCollections.observableArrayList();
+
         for (Libro libro : libros) {
             if (libro.getTitulo().toLowerCase().contains(filtro.toLowerCase()) ||
                 libro.getAutor().toLowerCase().contains(filtro.toLowerCase())) {
-                librosObservable.add(libro.getTitulo() + " - " + libro.getAutor() +
-                        " [" + libro.getEstado() + "]");
+                filtrados.add(libro);
             }
         }
+
+        listaLibros.setItems(filtrados);
     }
 
     @FXML
