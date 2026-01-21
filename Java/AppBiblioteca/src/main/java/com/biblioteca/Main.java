@@ -16,7 +16,7 @@ public class Main extends Application {
 
 	        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/libros.fxml"));
 	        Parent root = fxmlLoader.load();
-	        Scene scene = new Scene(root, 600, 400);
+	        Scene scene = new Scene(root, 875, 475);
 	        stage.setTitle("Biblioteca");
 	        stage.setScene(scene);
 	        stage.show();
