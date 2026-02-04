@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox xmlns="http://javafx.com/javafx/18"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.biblioteca.controllers.LibroController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+
+    <!-- Buscador -->
+    <TextField fx:id="txtBuscar" promptText="Buscar libro..." prefWidth="400"/>
+    
+    <TabPane fx:id="tabGeneros" prefHeight="40">
+	    <tabs>
+	        <Tab text="Todos"/>
+	        <Tab text="Novela"/>
+	        <Tab text="Fantasía"/>
+	        <Tab text="Ensayo"/>
+	        <Tab text="Historia"/>
+	    </tabs>
+	</TabPane>
+
+    <!-- Lista de libros -->
+    <ListView fx:id="listaLibros" prefWidth="400" prefHeight="300"/>
+    
+    <!-- Texto que muestra el total de libros -->
+	<Label fx:id="numLibrosPosesion"
+	       text="Libros en posesión: 0"
+	       style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+	
+	<Label fx:id="numLibrosPendiente"
+	       text="Libros pendientes: 0"
+	       style="-fx-text-fill: orange; -fx-font-weight: bold;"/>
+    
+    <!-- Formulario para agregar libro -->
+    <HBox spacing="10">
+        <TextField fx:id="txtTitulo" promptText="Título"/>
+        <TextField fx:id="txtAutor" promptText="Autor"/>
+        <ComboBox fx:id="comboGenero" prefWidth="120"/>
+        <ComboBox fx:id="comboEstado" prefWidth="120"/>
+        <Button text="Agregar" onAction="#handleAgregar"/>
+    </HBox>
+
+</VBox>
