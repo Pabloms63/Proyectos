@@ -6,3 +6,7 @@ Este proyecto consiste en una aplicación java de escritorio conectada a una BBD
 Nos permite añadir libros, filtrar por autor, título, pais/época y si está en posesión o pendiente.
 
 ![Captura de la app](src/main/resources/fxml/Captura.PNG)
+
+Futuras actualizaciones: 
+- Boton para eliminar libro de BBDD.
+- Posibilidad de modificar cualquier atributo de un libro desde la app.
