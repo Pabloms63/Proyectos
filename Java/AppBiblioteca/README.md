@@ -5,6 +5,4 @@ Proyecto creado por Pablo Marcos Sánchez. | Última actualización -> Febrero 2
 Este proyecto consiste en una aplicación java de escritorio conectada a una BBDD remota (firebase).
 Nos permite añadir libros, filtrar por autor, título, pais/época y si está en posesión o pendiente.
 
-![Captura de la app](Java/AppBiblioteca/src/main/resources/fxml/Captura.PNG)
-
-
+![Captura de la app](src/main/resources/fxml/Captura.PNG)
